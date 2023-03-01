@@ -6,7 +6,7 @@ issueTrackerURL="https://github.com/MelanX/SimplyHarvesting/issues"
 [[mods]]
 modId="simplyharvesting"
 version="${file.jarVersion}"
-displayName="SimplyHarvesting"
+displayName="Simply Harvesting"
 displayTest="IGNORE_ALL_VERSION"
 updateJSONURL="https://assets.melanx.de/updates/simply-harvesting.json"
 authors="MelanX"
