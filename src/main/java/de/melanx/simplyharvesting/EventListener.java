@@ -11,7 +11,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.CropBlock;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.storage.loot.LootContext;
+import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
@@ -31,8 +31,8 @@ public class EventListener {
             Level level = event.getLevel();
             if (!level.isClientSide) {
                 //noinspection ConstantConditions
-                LootTable lootTable = level.getServer().getLootTables().get(crop.getLootTable());
-                ObjectArrayList<ItemStack> drops = lootTable.getRandomItems(new LootContext.Builder((ServerLevel) level)
+                LootTable lootTable = level.getServer().getLootData().getLootTable(crop.getLootTable());
+                ObjectArrayList<ItemStack> drops = lootTable.getRandomItems(new LootParams.Builder((ServerLevel) level)
                         .withParameter(LootContextParams.THIS_ENTITY, event.getEntity())
                         .withParameter(LootContextParams.BLOCK_STATE, state)
                         .withParameter(LootContextParams.ORIGIN, Vec3.atCenterOf(pos))
