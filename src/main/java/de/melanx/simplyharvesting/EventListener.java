@@ -4,8 +4,10 @@ import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.CropBlock;
@@ -53,6 +55,11 @@ public class EventListener {
             SoundType soundType = crop.getSoundType(state, level, pos, event.getEntity());
             level.playSound(event.getEntity(), pos, soundType.getBreakSound(), SoundSource.BLOCKS, 1.0f, 1.0f);
             level.addDestroyBlockEffect(pos, state);
+
+            UseOnContext useOnContext = new UseOnContext(event.getEntity(), event.getHand(), hitResult);
+            event.getItemStack().onItemUseFirst(useOnContext);
+            event.setCancellationResult(InteractionResult.SUCCESS);
+            event.setCanceled(true);
         }
     }
 }
