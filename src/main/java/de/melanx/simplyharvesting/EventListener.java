@@ -8,9 +8,11 @@ import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.CocoaBlock;
 import net.minecraft.world.level.block.CropBlock;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
@@ -27,11 +29,15 @@ public class EventListener {
         BlockHitResult hitResult = event.getHitVec();
         BlockPos pos = hitResult.getBlockPos();
         BlockState state = event.getLevel().getBlockState(pos);
-        if (state.getBlock() instanceof CropBlock crop && state.getValue(crop.getAgeProperty()) == crop.getMaxAge()) {
+        Block block = state.getBlock();
+        Age age = block instanceof CropBlock crop ? new Age(crop.getAgeProperty(), crop.getMaxAge())
+                : block instanceof CocoaBlock ? new Age(CocoaBlock.AGE, CocoaBlock.MAX_AGE) : null;
+
+        if (age != null && state.getValue(age.property) == age.maxAge) {
             Level level = event.getLevel();
             if (!level.isClientSide) {
                 //noinspection ConstantConditions
-                LootTable lootTable = level.getServer().getLootTables().get(crop.getLootTable());
+                LootTable lootTable = level.getServer().getLootTables().get(block.getLootTable());
                 ObjectArrayList<ItemStack> drops = lootTable.getRandomItems(new LootContext.Builder((ServerLevel) level)
                         .withParameter(LootContextParams.THIS_ENTITY, event.getEntity())
                         .withParameter(LootContextParams.BLOCK_STATE, state)
@@ -39,7 +45,7 @@ public class EventListener {
                         .withParameter(LootContextParams.TOOL, ItemStack.EMPTY)
                         .create(LootContextParamSets.BLOCK));
 
-                level.setBlock(pos, state.setValue(crop.getAgeProperty(), 0), Block.UPDATE_ALL);
+                level.setBlock(pos, state.setValue(age.property, 0), Block.UPDATE_ALL);
 
                 for (ItemStack drop : drops) {
                     if (drop.getItem() instanceof BlockItem) {
@@ -50,9 +56,11 @@ public class EventListener {
                 }
             }
 
-            SoundType soundType = crop.getSoundType(state, level, pos, event.getEntity());
+            SoundType soundType = block.getSoundType(state, level, pos, event.getEntity());
             level.playSound(event.getEntity(), pos, soundType.getBreakSound(), SoundSource.BLOCKS, 1.0f, 1.0f);
             level.addDestroyBlockEffect(pos, state);
         }
     }
+
+    private record Age(IntegerProperty property, int maxAge) {}
 }
