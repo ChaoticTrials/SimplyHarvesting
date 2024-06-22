@@ -1,7 +1,7 @@
 package de.melanx.simplyharvesting;
 
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.common.Mod;
+import net.neoforged.fml.common.Mod;
+import net.neoforged.neoforge.common.NeoForge;
 
 @Mod(SimplyHarvesting.MODID)
 public class SimplyHarvesting {
@@ -10,6 +10,6 @@ public class SimplyHarvesting {
     public static final String MODID = "simplyharvesting";
 
     public SimplyHarvesting() {
-        MinecraftForge.EVENT_BUS.register(new EventListener());
+        NeoForge.EVENT_BUS.register(new EventListener());
     }
 }

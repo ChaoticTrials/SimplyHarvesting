@@ -21,8 +21,8 @@ import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 
 public class EventListener {
 
@@ -39,7 +39,7 @@ public class EventListener {
             Level level = event.getLevel();
             if (!level.isClientSide) {
                 //noinspection ConstantConditions
-                LootTable lootTable = level.getServer().getLootData().getLootTable(block.getLootTable());
+                LootTable lootTable = level.getServer().reloadableRegistries().getLootTable(block.getLootTable());
                 ObjectArrayList<ItemStack> drops = lootTable.getRandomItems(new LootParams.Builder((ServerLevel) level)
                         .withParameter(LootContextParams.THIS_ENTITY, event.getEntity())
                         .withParameter(LootContextParams.BLOCK_STATE, state)
