@@ -2,9 +2,11 @@ package de.melanx.simplyharvesting;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
@@ -24,6 +26,8 @@ import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 
+import java.util.Optional;
+
 public class EventListener {
 
     @SubscribeEvent
@@ -37,26 +41,7 @@ public class EventListener {
 
         if (age != null && state.getValue(age.property) == age.maxAge) {
             Level level = event.getLevel();
-            if (!level.isClientSide) {
-                //noinspection ConstantConditions
-                LootTable lootTable = level.getServer().reloadableRegistries().getLootTable(block.getLootTable());
-                ObjectArrayList<ItemStack> drops = lootTable.getRandomItems(new LootParams.Builder((ServerLevel) level)
-                        .withParameter(LootContextParams.THIS_ENTITY, event.getEntity())
-                        .withParameter(LootContextParams.BLOCK_STATE, state)
-                        .withParameter(LootContextParams.ORIGIN, Vec3.atCenterOf(pos))
-                        .withParameter(LootContextParams.TOOL, ItemStack.EMPTY)
-                        .create(LootContextParamSets.BLOCK));
-
-                level.setBlock(pos, state.setValue(age.property, 0), Block.UPDATE_ALL);
-
-                for (ItemStack drop : drops) {
-                    if (drop.getItem() instanceof BlockItem) {
-                        drop.shrink(1);
-                    }
-
-                    Block.popResource(level, pos, drop);
-                }
-            }
+            EventListener.dropLoot(level, event.getEntity(), state, pos, age);
 
             SoundType soundType = block.getSoundType(state, level, pos, event.getEntity());
             level.playSound(event.getEntity(), pos, soundType.getBreakSound(), SoundSource.BLOCKS, 1.0f, 1.0f);
@@ -66,6 +51,36 @@ public class EventListener {
             event.getItemStack().onItemUseFirst(useOnContext);
             event.setCancellationResult(InteractionResult.SUCCESS);
             event.setCanceled(true);
+        }
+    }
+
+    private static void dropLoot(Level level, Player player, BlockState state, BlockPos pos, Age age) {
+        if (level.isClientSide) {
+            return;
+        }
+
+        Optional<ResourceKey<LootTable>> lootTableKey = state.getBlock().getLootTable();
+        if (lootTableKey.isEmpty()) {
+            return;
+        }
+
+        //noinspection ConstantConditions
+        LootTable lootTable = level.getServer().reloadableRegistries().getLootTable(lootTableKey.get());
+        ObjectArrayList<ItemStack> drops = lootTable.getRandomItems(new LootParams.Builder((ServerLevel) level)
+                .withParameter(LootContextParams.THIS_ENTITY, player)
+                .withParameter(LootContextParams.BLOCK_STATE, state)
+                .withParameter(LootContextParams.ORIGIN, Vec3.atCenterOf(pos))
+                .withParameter(LootContextParams.TOOL, ItemStack.EMPTY)
+                .create(LootContextParamSets.BLOCK));
+
+        level.setBlock(pos, state.setValue(age.property, 0), Block.UPDATE_ALL);
+
+        for (ItemStack drop : drops) {
+            if (drop.getItem() instanceof BlockItem) {
+                drop.shrink(1);
+            }
+
+            Block.popResource(level, pos, drop);
         }
     }
 
