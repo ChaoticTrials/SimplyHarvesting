@@ -1,5 +1,5 @@
 plugins {
-    id 'org.moddingx.modgradle.meta' version '5.0.2'
+    id 'org.moddingx.modgradle.meta' version '5.0.3'
 }
 
 repositories {
@@ -52,6 +52,7 @@ mod.configure {
             type 'release'
             version '1.21.3'
             version '1.21.4'
+            version '1.21.5'
         }
         curseforge {
             projectId 701347
