@@ -6,6 +6,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
@@ -44,7 +45,8 @@ public class EventListener {
             EventListener.dropLoot(level, event.getEntity(), state, pos, age);
 
             SoundType soundType = block.getSoundType(state, level, pos, event.getEntity());
-            level.playSound(event.getEntity(), pos, soundType.getBreakSound(), SoundSource.BLOCKS, 1.0f, 1.0f);
+            // Player needs to be cast to Entity to prevent a crash in production
+            level.playSound((Entity) event.getEntity(), pos, soundType.getBreakSound(), SoundSource.BLOCKS, 1.0f, 1.0f);
             level.addDestroyBlockEffect(pos, state);
 
             UseOnContext useOnContext = new UseOnContext(event.getEntity(), event.getHand(), hitResult);
