@@ -57,7 +57,7 @@ public class EventListener {
     }
 
     private static void dropLoot(Level level, Player player, BlockState state, BlockPos pos, Age age) {
-        if (level.isClientSide) {
+        if (level.isClientSide()) {
             return;
         }
 
