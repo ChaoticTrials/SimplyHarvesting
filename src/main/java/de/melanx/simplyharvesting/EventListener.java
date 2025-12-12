@@ -18,6 +18,7 @@ import net.minecraft.world.level.block.CropBlock;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
+import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
@@ -39,6 +40,15 @@ public class EventListener {
         Block block = state.getBlock();
         Age age = block instanceof CropBlock crop ? new Age(crop.getAgeProperty(), crop.getMaxAge())
                 : block instanceof CocoaBlock ? new Age(CocoaBlock.AGE, CocoaBlock.MAX_AGE) : null;
+
+        if (age == null) {
+            for (Property<?> property : state.getProperties()) {
+                if (property instanceof IntegerProperty integerProperty && integerProperty.getName().equals("age")) {
+                    age = new Age(integerProperty, integerProperty.max);
+                    break;
+                }
+            }
+        }
 
         if (age != null && state.getValue(age.property) == age.maxAge) {
             Level level = event.getLevel();
