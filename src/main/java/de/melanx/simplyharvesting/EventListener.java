@@ -5,6 +5,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
@@ -47,14 +48,15 @@ public class EventListener {
 
         if (age != null && state.getValue(age.property) == age.maxAge) {
             Level level = event.getLevel();
+            Player player = event.getEntity();
             if (!level.isClientSide) {
                 //noinspection ConstantConditions
                 LootTable lootTable = level.getServer().reloadableRegistries().getLootTable(block.getLootTable());
                 ObjectArrayList<ItemStack> drops = lootTable.getRandomItems(new LootParams.Builder((ServerLevel) level)
-                        .withParameter(LootContextParams.THIS_ENTITY, event.getEntity())
+                        .withParameter(LootContextParams.THIS_ENTITY, player)
                         .withParameter(LootContextParams.BLOCK_STATE, state)
                         .withParameter(LootContextParams.ORIGIN, Vec3.atCenterOf(pos))
-                        .withParameter(LootContextParams.TOOL, ItemStack.EMPTY)
+                        .withParameter(LootContextParams.TOOL, player.getItemInHand(event.getHand()))
                         .create(LootContextParamSets.BLOCK));
 
                 level.setBlock(pos, state.setValue(age.property, 0), Block.UPDATE_ALL);
@@ -68,11 +70,11 @@ public class EventListener {
                 }
             }
 
-            SoundType soundType = block.getSoundType(state, level, pos, event.getEntity());
-            level.playSound(event.getEntity(), pos, soundType.getBreakSound(), SoundSource.BLOCKS, 1.0f, 1.0f);
+            SoundType soundType = block.getSoundType(state, level, pos, player);
+            level.playSound(player, pos, soundType.getBreakSound(), SoundSource.BLOCKS, 1.0f, 1.0f);
             level.addDestroyBlockEffect(pos, state);
 
-            UseOnContext useOnContext = new UseOnContext(event.getEntity(), event.getHand(), hitResult);
+            UseOnContext useOnContext = new UseOnContext(player, event.getHand(), hitResult);
             event.getItemStack().onItemUseFirst(useOnContext);
             event.setCancellationResult(InteractionResult.SUCCESS);
             event.setCanceled(true);
