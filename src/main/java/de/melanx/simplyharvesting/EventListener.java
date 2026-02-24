@@ -5,6 +5,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
@@ -52,7 +53,7 @@ public class EventListener {
 
         if (age != null && state.getValue(age.property) == age.maxAge) {
             Level level = event.getLevel();
-            EventListener.dropLoot(level, event.getEntity(), state, pos, age);
+            EventListener.dropLoot(level, event.getEntity(), event.getHand(), state, pos, age);
 
             SoundType soundType = block.getSoundType(state, level, pos, event.getEntity());
             // Player needs to be cast to Entity to prevent a crash in production
@@ -66,7 +67,7 @@ public class EventListener {
         }
     }
 
-    private static void dropLoot(Level level, Player player, BlockState state, BlockPos pos, Age age) {
+    private static void dropLoot(Level level, Player player, InteractionHand hand, BlockState state, BlockPos pos, Age age) {
         if (level.isClientSide()) {
             return;
         }
@@ -82,7 +83,7 @@ public class EventListener {
                 .withParameter(LootContextParams.THIS_ENTITY, player)
                 .withParameter(LootContextParams.BLOCK_STATE, state)
                 .withParameter(LootContextParams.ORIGIN, Vec3.atCenterOf(pos))
-                .withParameter(LootContextParams.TOOL, ItemStack.EMPTY)
+                .withParameter(LootContextParams.TOOL, player.getItemInHand(hand))
                 .create(LootContextParamSets.BLOCK));
 
         level.setBlock(pos, state.setValue(age.property, 0), Block.UPDATE_ALL);
