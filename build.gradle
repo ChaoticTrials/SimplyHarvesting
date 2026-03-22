@@ -1,5 +1,5 @@
 plugins {
-    id 'org.moddingx.modgradle.meta' version '5.1.0'
+    id 'org.moddingx.modgradle.meta' version '5.1.1'
 }
 
 repositories {
@@ -26,7 +26,7 @@ mod.configure {
         }
     }
 
-    neoforge project.hasProperty('neo_version') ? project.neo_version : "${baseVersion}.63"
+    neoforge project.hasProperty('neo_version') ? project.neo_version : "${baseVersion}.78"
 
     license 'The Apache License, Version 2.0'
     github 'ChaoticTrials/SimplyHarvesting'
@@ -37,7 +37,6 @@ mod.configure {
 
         return filteredChangelog
     }
-
 
     publishing {
         maven {
