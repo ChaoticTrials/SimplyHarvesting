@@ -1,0 +1,73 @@
+{
+  "values": [
+    "minecraft:sweet_berry_bush",
+    {
+      "id": "autumnity:tall_foul_berry_bush",
+      "required": false
+    },
+    {
+      "id": "biomeswevegone:blueberry_bush",
+      "required": false
+    },
+    {
+      "id": "fruitsdelight:blueberry_bush",
+      "required": false
+    },
+    {
+      "id": "fruitsdelight:cranberry_bush",
+      "required": false
+    },
+    {
+      "id": "fruitsdelight:lemon_tree",
+      "required": false
+    },
+    {
+      "id": "hearthandharvest:blueberry_bush",
+      "required": false
+    },
+    {
+      "id": "kawaiidishes:coffee_bush",
+      "required": false
+    },
+    {
+      "id": "newworld:blueberry_bush",
+      "required": false
+    },
+    {
+      "id": "newworld:cloudberry_bush",
+      "required": false
+    },
+    {
+      "id": "newworld:raspberry_bush",
+      "required": false
+    },
+    {
+      "id": "newworld:strawberry_bush",
+      "required": false
+    },
+    {
+      "id": "notenoughbush:galeberry_bush",
+      "required": false
+    },
+    {
+      "id": "notenoughbush:blackberry_bush",
+      "required": false
+    },
+    {
+      "id": "skyrimcraft:snowberry_bush",
+      "required": false
+    },
+    {
+      "id": "skyrimcraft:juniper_berry_bush",
+      "required": false
+    },
+    {
+      "id": "twindlingtweaks:blueberry_bush",
+      "required": false
+    },
+    {
+      "id": "twindlingtweaks:raspberry_bush",
+      "required": false
+    }
+  ]
+}

@@ -2,6 +2,7 @@ package de.melanx.simplyharvesting;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.core.BlockPos;
+import net.minecraft.data.DataGenerator;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
@@ -27,20 +28,33 @@ import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.data.event.GatherDataEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 
 import java.util.Optional;
 
+@EventBusSubscriber
 public class EventListener {
 
     @SubscribeEvent
-    public void onRightclickBlock(PlayerInteractEvent.RightClickBlock event) {
+    public static void datagen(GatherDataEvent.Server event) {
+        DataGenerator generator = event.getGenerator();
+        event.addProvider(new BlockTags(generator.getPackOutput(), event.getLookupProvider(), SimplyHarvesting.MODID));
+    }
+
+    @SubscribeEvent
+    public static void onRightclickBlock(PlayerInteractEvent.RightClickBlock event) {
         BlockHitResult hitResult = event.getHitVec();
         BlockPos pos = hitResult.getBlockPos();
         BlockState state = event.getLevel().getBlockState(pos);
         Block block = state.getBlock();
         Age age = block instanceof CropBlock crop ? new Age(crop.getAgeProperty(), crop.getMaxAge())
                 : block instanceof CocoaBlock ? new Age(CocoaBlock.AGE, CocoaBlock.MAX_AGE) : null;
+
+        if (state.is(BlockTags.BERRY_BUSHES) || (event.getEntity().isShiftKeyDown() && ServerConfig.disableOnSneaking())) {
+            return;
+        }
 
         if (age == null) {
             for (Property<?> property : state.getProperties()) {
