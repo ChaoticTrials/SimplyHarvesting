@@ -3,11 +3,11 @@ package de.melanx.simplyharvesting;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
+import net.minecraft.references.BlockItemIds;
 import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagEntry;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
 import net.neoforged.neoforge.common.data.BlockTagsProvider;
 
 import javax.annotation.Nonnull;
@@ -27,7 +27,7 @@ public class BlockTags extends BlockTagsProvider {
         this.tag(IGNORE).addTag(BERRY_BUSHES);
         var berryBushesTag = this.tag(BERRY_BUSHES);
 
-        berryBushesTag.add(Blocks.SWEET_BERRY_BUSH);
+        berryBushesTag.add(BlockItemIds.SWEET_BERRY_CROP.block());
 
         // Autumnity
         berryBushesTag.add(TagEntry.optionalElement(Identifier.fromNamespaceAndPath("autumnity", "tall_foul_berry_bush")));
