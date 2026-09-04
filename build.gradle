@@ -1,5 +1,5 @@
 plugins {
-    id 'org.moddingx.modgradle.meta' version '5.1.1'
+    id 'org.moddingx.modgradle.meta' version '5.1.5'
 }
 
 repositories {
@@ -48,6 +48,7 @@ mod.configure {
     upload {
         all {
             type 'release'
+            environmentType 'client_and_server'
             version '1.21.11'
         }
         curseforge {
