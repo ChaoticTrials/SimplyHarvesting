@@ -10,8 +10,9 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -102,9 +103,12 @@ public class EventListener {
 
         level.setBlock(pos, state.setValue(age.property, 0), Block.UPDATE_ALL);
 
+        Item plantItem = state.getBlock().asItem();
+        boolean seedProcessed = false;
         for (ItemStack drop : drops) {
-            if (drop.getItem() instanceof BlockItem) {
+            if (!seedProcessed && plantItem != Items.AIR && drop.getItem() == plantItem) {
                 drop.shrink(1);
+                seedProcessed = true;
             }
 
             Block.popResource(level, pos, drop);
