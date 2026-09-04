@@ -53,7 +53,7 @@ public class EventListener {
         Age age = block instanceof CropBlock crop ? new Age(crop.getAgeProperty(), crop.getMaxAge())
                 : block instanceof CocoaBlock ? new Age(CocoaBlock.AGE, CocoaBlock.MAX_AGE) : null;
 
-        if (state.is(BlockTags.BERRY_BUSHES) || (event.getEntity().isShiftKeyDown() && ServerConfig.disableOnSneaking())) {
+        if (state.is(BlockTags.IGNORE) || (event.getEntity().isShiftKeyDown() && ServerConfig.disableOnSneaking())) {
             return;
         }
 
