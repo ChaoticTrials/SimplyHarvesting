@@ -41,7 +41,7 @@ public class EventListener {
     @SubscribeEvent
     public static void datagen(GatherDataEvent.Server event) {
         DataGenerator generator = event.getGenerator();
-        event.addProvider(new BlockTags(generator.getPackOutput(), event.getLookupProvider(), SimplyHarvesting.MODID));
+        event.addProvider(new BlockTags(generator.getPackOutput(), event.getWorldLookupProvider(), SimplyHarvesting.MODID));
     }
 
     @SubscribeEvent

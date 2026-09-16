@@ -10,6 +10,7 @@ displayURL = "${mod.source_url}"
 displayName = "Simply Harvesting"
 updateJSONURL = "https://assets.melanx.de/updates/simply-harvesting.json"
 authors = "MelanX"
+iconFile="${mod.modid}_icon.png"
 description = """
 Right click to harvest any crop
 """
