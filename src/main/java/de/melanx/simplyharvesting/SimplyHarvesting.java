@@ -11,6 +11,6 @@ public class SimplyHarvesting {
     public static final String MODID = "simplyharvesting";
 
     public SimplyHarvesting(ModContainer modContainer) {
-        modContainer.registerConfig(ModConfig.Type.SERVER, ServerConfig.CONFIG);
+        modContainer.registerConfig(ModConfig.Type.SYNCED, SyncedConfig.CONFIG);
     }
 }
